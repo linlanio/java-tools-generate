@@ -1,0 +1,15 @@
+-- 菜单SQL
+insert into ADMIN_MENU (PARENT_ID, APP_ID, NAME, SNAME, TYPE, ADMIN_ID, CODE, MENU_LEVEL, SUB_COUNT, PERMS, URL_TYPE, URL, ICON, POP_POSITION, IMAGE_PATH, CSS, JS_EVENT, MENU_SEQ, SHORT_CUT, IS_LEAF, IS_DISPLAY, IS_PROTECT, IS_DISABLED, IS_CHECK, PRIORITY, CREATE_TIME, LAST_TIME, DEL_FLAG, DELETE_TIME, DESCRIPTION, SPARE1, SPARE2)
+values (1, '${defAppId}', '${comments}', '${comments}', 'MENU', 1, null, 2, null, null, null, '${adminRoot}/${packageSlash}/${sname}.html', 'fa fa-file-code-o', null, null, null, null, null, '${sname}', 0, 1, 0, 0, 0, 10, SYSDATE, SYSDATE, 0, null, '${comments}', null, null);
+
+-- 按钮父菜单ID
+set @parentId = @@identity;
+
+insert into ADMIN_MENU (PARENT_ID, APP_ID, NAME, SNAME, TYPE, ADMIN_ID, CODE, MENU_LEVEL, SUB_COUNT, PERMS, URL_TYPE, URL, ICON, POP_POSITION, IMAGE_PATH, CSS, JS_EVENT, MENU_SEQ, SHORT_CUT, IS_LEAF, IS_DISPLAY, IS_PROTECT, IS_DISABLED, IS_CHECK, PRIORITY, CREATE_TIME, LAST_TIME, DEL_FLAG, DELETE_TIME, DESCRIPTION, SPARE1, SPARE2)
+values ('@parentId', '${defAppId}', '查看', '查看', 'BUTTON', 1, null, 3, null, '${classGroup}:${sname}:list,${classGroup}:${sname}:info', null, null, null, null, null, null, null, null, 'CK', 0, 1, 0, 0, 0, 10, SYSDATE, SYSDATE, 0, null, '查看', null, null);
+insert into ADMIN_MENU (PARENT_ID, APP_ID, NAME, SNAME, TYPE, ADMIN_ID, CODE, MENU_LEVEL, SUB_COUNT, PERMS, URL_TYPE, URL, ICON, POP_POSITION, IMAGE_PATH, CSS, JS_EVENT, MENU_SEQ, SHORT_CUT, IS_LEAF, IS_DISPLAY, IS_PROTECT, IS_DISABLED, IS_CHECK, PRIORITY, CREATE_TIME, LAST_TIME, DEL_FLAG, DELETE_TIME, DESCRIPTION, SPARE1, SPARE2)
+values ('@parentId', '${defAppId}', '新增', '新增', 'BUTTON', 1, null, 3, null, '${classGroup}:${sname}:save,${classGroup}:${sname}:select', null, null, null, null, null, null, null, null, 'XZ', 0, 1, 0, 0, 0, 10, SYSDATE, SYSDATE, 0, null, '新增', null, null);
+insert into ADMIN_MENU (PARENT_ID, APP_ID, NAME, SNAME, TYPE, ADMIN_ID, CODE, MENU_LEVEL, SUB_COUNT, PERMS, URL_TYPE, URL, ICON, POP_POSITION, IMAGE_PATH, CSS, JS_EVENT, MENU_SEQ, SHORT_CUT, IS_LEAF, IS_DISPLAY, IS_PROTECT, IS_DISABLED, IS_CHECK, PRIORITY, CREATE_TIME, LAST_TIME, DEL_FLAG, DELETE_TIME, DESCRIPTION, SPARE1, SPARE2)
+values ('@parentId', '${defAppId}', '修改', '修改', 'BUTTON', 1, null, 3, null, '${classGroup}:${sname}:update,${classGroup}:${sname}:select', null, null, null, null, null, null, null, null, 'XG', 0, 1, 0, 0, 0, 10, SYSDATE, SYSDATE, 0, null, '修改', null, null);
+insert into ADMIN_MENU (PARENT_ID, APP_ID, NAME, SNAME, TYPE, ADMIN_ID, CODE, MENU_LEVEL, SUB_COUNT, PERMS, URL_TYPE, URL, ICON, POP_POSITION, IMAGE_PATH, CSS, JS_EVENT, MENU_SEQ, SHORT_CUT, IS_LEAF, IS_DISPLAY, IS_PROTECT, IS_DISABLED, IS_CHECK, PRIORITY, CREATE_TIME, LAST_TIME, DEL_FLAG, DELETE_TIME, DESCRIPTION, SPARE1, SPARE2)
+values ('@parentId', '${defAppId}', '删除', '删除', 'BUTTON', 1, null, 3, null, '${classGroup}:${sname}:delete', null, null, null, null, null, null, null, null, 'SC', 0, 1, 0, 0, 0, 10, SYSDATE, SYSDATE, 0, null, '删除', null, null);

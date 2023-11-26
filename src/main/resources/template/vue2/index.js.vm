@@ -1,0 +1,50 @@
+import request from 'src/api/request'
+import requestUrl from 'src/api/requestUrl'
+import requestParam from 'src/api/requestParam'
+import isNumber from 'lodash/isNumber'
+
+//获取对象列表
+export function list (params) {
+  return request({
+    url: requestUrl('/${classGroup}/${sname}/list'),
+    method: 'get',
+    params: requestParam(params, 'get')
+  })
+}
+
+//获取单个记录详情信息
+export function info (id) {
+  return request({
+    url: requestUrl('/${classGroup}/${sname}/info' + (isNumber(id) ? `/${id}` : '')),
+    method: 'get',
+    params: requestParam({}, 'get')
+  })
+}
+
+//新增方法
+export function add (params) {
+  return request({
+    url: requestUrl('/${classGroup}/${sname}/save'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+
+//更新方法
+export function update (params) {
+  return request({
+    url: requestUrl('/${classGroup}/${sname}/update'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+
+//删除方法
+export function del (params) {
+  return request({
+    url: requestUrl('/${classGroup}/${sname}/delete'),
+    method: 'post',
+    data: requestParam(params, 'post', false)
+  })
+
+}

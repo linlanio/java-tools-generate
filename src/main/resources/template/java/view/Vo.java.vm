@@ -1,0 +1,77 @@
+package ${viewPackage}.vo;
+
+import com.google.common.base.Function;
+import ${package}.entity.${className};
+import ${package}.dto.${className}Dto;
+import lombok.Data;
+import org.springframework.lang.Nullable;
+import java.util.Date;
+
+/**
+ *
+ * ${className}视图域:${comments}显示Vo类
+ * @Description <br>
+ * <br>
+ * @author ${author}
+ * CreateTime ${datetime}<br>
+ * <br>
+ * @version 1.0<br>
+ * @since 1.0<br>
+ *
+ */
+@Data
+public class ${className}Vo {
+#foreach ($column in $columns)
+    /**
+     * $column.comments
+     */
+    private $column.attrType $column.attrname;
+#end
+
+    /**
+     * 无参构造方法
+     */
+    public ${className}Vo() {
+    }
+
+    /**
+     * 数据赋值TO方法，将${className}的input对象赋值给${className}Vo
+     */
+    public static final Function TO = new Function<${className}, ${className}Vo>() {
+        @Nullable
+        @Override
+        public ${className}Vo apply(@Nullable ${className} input) {
+            return new ${className}Vo(input);
+        }
+    };
+
+    /**
+     * @param input 数据库查询出的entity对象，对VO对象进行赋值，默认的字段为全部字段，可结合实际调整
+     */
+    public ${className}Vo(${className} input) {
+#foreach ($column in $columns)
+        this.$column.attrname = input.get${column.attrName}();
+#end
+    }
+
+    /**
+     * 数据赋值DTO方法，将${className}Dto的input对象赋值给${className}Vo
+     */
+    public static final Function DTO = new Function<${className}Dto, ${className}Vo>() {
+        @Nullable
+        @Override
+        public ${className}Vo apply(@Nullable ${className}Dto input) {
+            return new ${className}Vo(input);
+        }
+    };
+
+    /**
+     * @param input 数据库查询出的Dto对象，对VO对象进行赋值，默认的字段为全部字段，可结合实际调整
+     */
+    public ${className}Vo(${className}Dto input) {
+#foreach ($column in $columns)
+        this.$column.attrname = input.get${column.attrName}();
+#end
+    }
+
+}

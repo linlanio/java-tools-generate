@@ -1,0 +1,55 @@
+package ${package}.entity;
+
+import io.linlan.common.entity.BaseEntity;
+import java.util.Date;
+#if(${hasBigDecimal})
+import java.math.BigDecimal;
+#end
+import lombok.Data;
+import io.linlan.commons.core.RandomUtils;
+
+/**
+ *
+ * ${className}数据域:${comments}实体类
+ * @Description <br>
+ * <br>
+ * @author ${author}
+ * CreateTime ${datetime}<br>
+ * <br>
+ * @version 1.0<br>
+ * @since 1.0<br>
+ *
+ */
+@Data
+public class ${className} extends BaseEntity {
+
+#foreach ($column in $columns)
+#if($column.attrname != 'createTime'&&$column.attrname != 'lastTime'&&$column.attrname != 'creatorId')
+    /**
+     * $column.comments
+     */
+    private $column.attrType $column.attrname;
+
+#end
+#end
+
+    /**
+     * 初始化方法
+     */
+    public void init() {
+        //添加对数据库或实体对象的默认值处理
+        if(getId() == null) {
+#if(${pk.attrType} == 'String')
+            setId(RandomUtils.randomSid());
+#elseif(${pk.attrType} == 'Long')
+            setId(RandomUtils.randomLid());
+#elseif(${pk.attrType} == 'Integer')
+            setId(RandomUtils.random());
+#else
+            setId(RandomUtils.randomSid());
+#end
+        }
+
+    }
+
+}

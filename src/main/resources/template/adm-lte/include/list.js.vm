@@ -1,0 +1,190 @@
+$(function () {
+    $("#jqGrid").jqGrid({
+        url: baseURL + '${classGroup}/${sname}/list',
+        datatype: "json",
+        colModel: [
+#foreach($column in $columns)
+#if($column.columnName == $pk.columnName)
+            { label: '${column.attrname}', name: '${column.attrname}', index: '${column.columnName}', width: 50, key: true },
+#else
+            { label: '${column.comments}', name: '${column.attrname}', index: '${column.columnName}', width: 80 },
+#end
+#end
+            { label: '操作', name: 'Id', index: '$pk.columnName', width: 80 ,formatter:function (value, options, row) {
+                value = '<a href="javascript:;" style="cursor:pointer;" onclick=\'vm.detailPreview('+JSON.stringify(row)+');\'>查看详情</a>';
+                return value;}
+            }
+        ],
+        viewrecords: true,
+        height: 385,
+        rowNum: 10,
+        rowList : [10,30,50],
+        rownumbers: true, 
+        rownumWidth: 25, 
+        autowidth:true,
+        multiselect: true,
+        pager: "#jqGridPager",
+        jsonReader : {
+            root: "data.list",
+            page: "data.currPage",
+            total: "data.totalPage",
+            records: "data.totalCount"
+        },
+        prmNames : {
+            page:"page",
+            rows:"limit", 
+            order: "order"
+        },
+        gridComplete:function(){
+            //隐藏grid底部滚动条
+            $("#jqGrid").closest(".ui-jqgrid-bdiv").css({ "overflow-x" : "hidden" });
+            $("#jqGrid").setGridParam().hideCol("id");
+        }
+    });
+});
+
+var vm = new Vue({
+    el:'#rrapp',
+    data:{
+        showList: true,
+        showOrNone: '',
+        title: null,
+        ${classname}: {},
+        showDetail:{//数据回显
+            ${classname}:{},
+        },
+    },
+    mounted:function(){
+        this.$nextTick(function () {
+            this.initCom();
+        })
+
+    },
+    methods: {
+        //初始化组件控件
+        initCom:function () {
+        },
+        //查询方法
+        query: function () {
+            vm.reload();
+        },
+        //新增方法
+        add: function(){
+            vm.showList = false;
+            vm.title = "新增";
+            vm.${classname} = {};
+#if($pk.attrType == 'String')
+            vm.getInfo(null);
+#else
+            vm.getInfo(0);
+#end
+        },
+        //更新方法
+        update: function (event) {
+            var $pk.attrname = getSelectedRow();
+            if($pk.attrname == null){
+                return ;
+            }
+            vm.showList = false;
+            vm.title = "修改";
+            
+            vm.getInfo(${pk.attrname})
+        },
+        //保存或更新对象信息
+        saveOrUpdate: function (event) {
+            //进行页面数据完整性校验
+            //if (checkInputNull(vm.${classname}, ['name'], ['名称'])) return;
+            var url = vm.${classname}.${pk.attrname} == null ? "${classGroup}/${sname}/save" : "${classGroup}/${sname}/update";
+            $.ajax({
+                type: "POST",
+                url: baseURL + url,
+                contentType: "application/json",
+                data: JSON.stringify(vm.${classname}),
+                success: function(r){
+                    if(r.code == 0){
+                        alert('操作成功', function(index){
+                            vm.reload();
+                        });
+                    }else{
+                        alert(r.msg);
+                    }
+                }
+            });
+        },
+        //删除方法
+        del: function (event) {
+            var ${pk.attrname}s = getSelectedRows();
+            if(${pk.attrname}s == null){
+                return ;
+            }
+            confirm('确定要删除选中的记录？', function(){
+                $.ajax({
+                    type: "POST",
+                    url: baseURL + "${classGroup}/${sname}/delete",
+                    contentType: "application/json",
+                    data: JSON.stringify(${pk.attrname}s),
+                    success: function(r){
+                        if(r.code == 0){
+                            alert('操作成功', function(index){
+                                $("#jqGrid").trigger("reloadGrid");
+                            });
+                        }else{
+                            alert(r.msg);
+                        }
+                    }
+                });
+            });
+        },
+        //预览方法
+        detailPreview: function (row) {
+            #*vm.showDetail.${classname} = row;*#
+            if(row == null){
+                return ;
+            }
+            let id = row.id;
+            vm.getDetailInfo(id);
+            layer.open({
+                type: 1,
+                title: '详情',
+                anim: 5,//弹出动画：渐显
+                maxmin: true, //开启最大化最小化按钮
+                area: ['900px', '500px'], //宽高
+                content: jQuery("#${classname}Preview"),
+                success:function(){
+                    vm.showOrNone = '${classname}Preview';
+                },
+                end:function () {
+                    vm.showOrNone = '';
+                }
+            });
+        },
+        /**
+         * 预览详情页面，可灵活添加对象，建议获取详情方法重写，方便获取所有关联信息，detailInfo
+         */
+        getDetailInfo(id){
+            $.get(baseURL + "${classGroup}/${sname}/info/"+id, function(r){
+                vm.showDetail.${classname} = r;
+            });
+        },
+        //获取单个记录详情信息
+        getInfo: function(${pk.attrname}){
+            $.get(baseURL + "${classGroup}/${sname}/info/"+${pk.attrname}, function(r){
+                #if(${pk.attrType} == 'String')if(id != null)#else if(id != 0)#end {
+                    vm.${classname} = r.${classname};
+                    //页面组件控件赋值
+                }else{
+                    //页面组件控件初始化
+                }
+                //其他初始化
+            });
+        },
+        //刷新页面或重新加载页面
+        reload: function (event) {
+            vm.showList = true;
+            var page = $("#jqGrid").jqGrid('getGridParam','page');
+            $("#jqGrid").jqGrid('setGridParam',{
+                page:page
+            }).trigger("reloadGrid");
+        },
+    }
+});

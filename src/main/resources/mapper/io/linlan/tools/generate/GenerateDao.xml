@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.linlan.tools.generate.dao.GenerateDao">
+
+    <select id="getList" resultType="map">
+        <choose>
+            <when test='_databaseId == "oracle"'>
+                <choose>
+                    <when test="offset != null and limit != null">
+                        SELECT us.tableName tableName, us.engine engine, us.tableComment tableComment, us.createTime createTime FROM (
+                        select ut.TABLE_NAME tableName, 'oracle' engine, uc.comments tableComment, ut.LAST_ANALYZED createTime, rownum as rn
+                        from user_tables ut, user_tab_comments uc
+                        where ut.TABLE_NAME = uc.table_name
+                        and ut.TABLE_NAME like '%'||#{tableName}||'%'
+                        <![CDATA[and rownum <= (#{offset} + #{limit}) ]]>
+                        <choose>
+                            <when test='sidx != null and sidx.trim() != ""'>
+                                ORDER BY ${sidx} ${order}
+                            </when>
+                            <otherwise>
+                                ORDER BY ut.TABLE_NAME ASC
+                            </otherwise>
+                        </choose>
+                        ) us
+                        <![CDATA[where rn > #{offset}]]>
+                    </when>
+                    <otherwise>
+                        select ut.TABLE_NAME tableName, 'oracle' engine, uc.comments tableComment, ut.LAST_ANALYZED createTime, rownum as rn
+                        from user_tables ut, user_tab_comments uc
+                        where ut.TABLE_NAME = uc.table_name
+                        and ut.TABLE_NAME like '%'||#{tableName}||'%'
+                        <choose>
+                            <when test='sidx != null and sidx.trim() != ""'>
+                                ORDER BY ${sidx} ${order}
+                            </when>
+                            <otherwise>
+                                ORDER BY ut.TABLE_NAME ASC
+                            </otherwise>
+                        </choose>
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                select table_name tableName, engine, table_comment tableComment, create_time createTime from information_schema.tables
+                where table_schema = (select database())
+                <if test='tableName != null and tableName.trim() != ""'>
+                    and table_name like concat('%', #{tableName}, '%')
+                </if>
+                order by create_time desc
+                <if test="offset != null and limit != null">
+                    limit #{offset}, #{limit}
+                </if>
+            </otherwise>
+        </choose>
+
+
+    </select>
+
+    <select id="queryTotal" resultType="int">
+        <choose>
+            <when test='_databaseId == "oracle"'>
+                select count(*) from user_tables
+                <if test='tableName != null and tableName.trim() != ""'>
+                    where table_name like '%'||#{tableName}||'%'
+                </if>
+            </when>
+            <otherwise>
+                select count(*) from information_schema.tables where table_schema = (select database())
+                <if test='tableName != null and tableName.trim() != ""'>
+                    and table_name like concat('%', #{tableName}, '%')
+                </if>
+            </otherwise>
+        </choose>
+
+    </select>
+
+    <select id="queryTable" resultType="map">
+        <choose>
+            <when test='_databaseId == "oracle"'>
+                select ut.TABLE_NAME tableName, 'oracle' engine, uc.comments tableComment, ut.LAST_ANALYZED createTime
+                from user_tables ut, user_tab_comments uc
+                where ut.TABLE_NAME = uc.table_name
+                and ut.TABLE_NAME = #{tableName}
+            </when>
+            <otherwise>
+                select table_name tableName, engine, table_comment tableComment, create_time createTime from information_schema.tables
+                where table_schema = (select database()) and table_name = #{tableName}
+            </otherwise>
+        </choose>
+
+    </select>
+
+    <select id="queryColumns" resultType="map">
+        <choose>
+            <when test='_databaseId == "oracle"'>
+                select utc.column_name columnName, utc.data_type dataType, ucc.comments columnComment,
+                utc.COLUMN_ID columnKey,
+                utc.COLUMN_ID extra
+                from user_tab_columns utc, user_col_comments ucc
+                where utc.TABLE_NAME = ucc.table_name
+                and utc.COLUMN_NAME = ucc.column_name
+                and utc.table_name = #{tableName}
+                order by utc.COLUMN_ID ASC
+            </when>
+            <otherwise>
+                select column_name columnName, data_type dataType, column_comment columnComment, column_key columnKey, extra from information_schema.columns
+                where table_name = #{tableName} and table_schema = (select database()) order by ordinal_position
+            </otherwise>
+        </choose>
+
+    </select>
+
+</mapper>

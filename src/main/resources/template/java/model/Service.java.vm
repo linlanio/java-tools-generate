@@ -1,0 +1,128 @@
+package ${package}.service;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import ${package}.dao.${className}Dao;
+import ${package}.entity.${className};
+import ${package}.dto.${className}Dto;
+import ${package}.param.${className}Param;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Map;
+
+
+/**
+ *
+ * ${className}数据域:${comments}服务类
+ * @Description <br>
+ * <br>
+ * @author ${author}
+ * CreateTime ${datetime}<br>
+ * <br>
+ * @version 1.0<br>
+ * @since 1.0<br>
+ *
+ */
+@Service
+@Slf4j
+public class ${className}Service {
+
+    @Autowired
+    private ${className}Dao dao;
+
+    /** get the list of entity ${className}
+     * 列表方法，返回{@link List<${className}>}
+     * @param map the input select conditions
+     * @return {@link List<${className}>}
+     */
+    //@DataFilter(tableAlias = "B", owner = false)
+    public List<${className}> getList(Map<String, Object> map) {
+        return dao.getList(map);
+    }
+
+    /** find the entity by input id, return entity
+     * 对象详情方法，通过id查询对象{@link ${className}}
+     * @param ${pk.attrname} #foreach($column in $columns)#if($column.columnName == $pk.columnName)$column.comments#end#end|1
+     * @return {@link ${className}}
+     */
+    public ${className} findById(${pk.attrType} ${pk.attrname}) {
+        return dao.findById(${pk.attrname});
+    }
+
+    /** save the entity with input object
+     * 保存对象方法
+     * @param ${classname} the input ${classname}
+     */
+    //@Transactional
+    public void save(${className} ${classname}) {
+        ${classname}.init();
+        dao.save(${classname});
+    }
+
+    /** save the entity with input list
+     * 保存对象${comments}，批量保存list
+     * @param list {@link ${className}}
+     */
+    public void batchInsert(List<${className}> list) {
+        dao.batchInsert(list);
+    }
+
+    /** update the entity with input object
+     * 更新对象方法
+     * @param ${classname} the input ${classname}
+     */
+    //@Transactional
+    public void update(${className} ${classname}) {
+        dao.update(${classname});
+    }
+
+    /** delete the entity by input id
+     * 删除方法，通过id删除对象
+     * @param ${pk.attrname} #foreach($column in $columns)#if($column.columnName == $pk.columnName)$column.comments#end#end|1
+     */
+    public void deleteById(${pk.attrType} ${pk.attrname}) {
+        dao.deleteById(${pk.attrname});
+    }
+
+    /** batch delete the entity by input ids
+     * 批量删除方法，通过ids删除对象
+     * @param ${pk.attrname}s the input ids
+     */
+    //@Transactional
+    public void deleteByIds(${pk.attrType}[] ${pk.attrname}s) {
+        dao.deleteByIds(${pk.attrname}s);
+    }
+
+    /** query the total count by input select conditions
+     * 通过输入的条件查询记录总数
+     * @param map the input select conditions
+     * @return total count
+     */
+    public int queryTotal(Map<String, Object> map) {
+        return dao.queryTotal(map);
+    }
+
+    /** get the page of dto ${className}Dto
+     * 列表分页方法，返回分页DTO对象列表
+     * @param param the input param {@link ${className}Param>}
+     * @return {@link Page<${className}>}
+     */
+    //@DataFilter(tableAlias = "B", owner = false)
+    public Page<${className}Dto> getPageDto(${className}Param param) {
+        PageHelper.startPage(param.getPage(), param.getLimit());
+        return dao.getPageDto(param);
+    }
+
+    /** get the dto by input id, return dto
+     * 对象详情方法，通过id查询对象{@link ${className}Dto}
+     * @param ${pk.attrname} #foreach($column in $columns)#if($column.columnName == $pk.columnName)$column.comments#end#end|1
+     * @return {@link ${className}Dto}
+     */
+    public ${className}Dto getDtoById(${pk.attrType} ${pk.attrname}) {
+        return dao.getDtoById(${pk.attrname});
+    }
+
+
+}

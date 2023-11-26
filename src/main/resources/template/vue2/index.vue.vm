@@ -1,0 +1,153 @@
+<template>
+  <div class="mod-config">
+    <el-form :inline="true" :model="${classname}" @keyup.enter.native="get${className}List()">
+      <el-form-item>
+        <el-input v-model="${classname}.key" placeholder="参数名" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="get${className}List()">查询</el-button>
+        <el-button v-if="isAuth('${classGroup}:${sname}:save')" type="primary" @click="addOrEditHandle()">新增</el-button>
+        <el-button v-if="isAuth('${classGroup}:${sname}:delete')" type="danger" @click="deleteHandle()" :disabled="${classname}ListSelections.length <= 0">批量删除</el-button>
+      </el-form-item>
+    </el-form>
+    <el-table
+      :data="${classname}List"
+      border
+      v-loading="${classname}ListLoading"
+      @selection-change="selectionChangeHandle"
+      style="width: 100%;">
+      <el-table-column
+        type="selection"
+        header-align="center"
+        align="center"
+        width="50">
+      </el-table-column>
+#foreach($column in $columns)
+      <el-table-column
+        prop="${column.attrname}"
+        header-align="center"
+        align="center"
+        label="${column.comments}">
+      </el-table-column>
+#end
+      <el-table-column
+        fixed="right"
+        header-align="center"
+        align="center"
+        width="150"
+        label="操作">
+        <template slot-scope="scope">
+          <el-button type="text" size="small" @click="addOrEditHandle(scope.row.${pk.attrname})">修改</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.${pk.attrname})">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination
+      @size-change="sizeChangeHandle"
+      @current-change="currentChangeHandle"
+      :current-page="pageIndex"
+      :page-sizes="[10, 20, 50, 100]"
+      :page-size="pageSize"
+      :total="totalPage"
+      layout="total, sizes, prev, pager, next, jumper">
+    </el-pagination>
+    <!-- 弹窗, 新增 / 修改 -->
+    <add-or-edit v-if="addOrEditVisible" ref="addOrEdit" @refresh${className}List="get${className}List"></add-or-edit>
+  </div>
+</template>
+
+<script>
+  import API from '@/api'
+  import AddOrEdit from './add-or-edit'
+  export default {
+    data () {
+      return {
+        ${classname}: {
+          key: ''
+        },
+        ${classname}List: [],
+        pageIndex: 1,
+        pageSize: 10,
+        totalPage: 0,
+        ${classname}ListLoading: false,
+        ${classname}ListSelections: [],
+        addOrEditVisible: false
+      }
+    },
+    components: {
+      AddOrEdit
+    },
+    activated () {
+      this.get${className}List()
+    },
+    methods: {
+      // 获取数据列表
+      get${className}List () {
+        this.${classname}ListLoading = true
+        var params = {
+          page: this.pageIndex,
+          limit: this.pageSize,
+          key: this.${classname}.key
+        }
+        API.${sname}.list(params).then(({data}) => {
+          if (data && data.code === 0) {
+            this.${classname}List = data.data.list
+            this.totalPage = data.data.totalCount
+          } else {
+            this.${classname}List = []
+            this.totalPage = 0
+          }
+          this.${classname}ListLoading = false
+        })
+      },
+      // 每页数
+      sizeChangeHandle (val) {
+        this.pageSize = val
+        this.pageIndex = 1
+        this.get${className}List()
+      },
+      // 当前页
+      currentChangeHandle (val) {
+        this.pageIndex = val
+        this.get${className}List()
+      },
+      // 多选
+      selectionChangeHandle (val) {
+        this.${classname}ListSelections = val
+      },
+      // 新增 / 修改
+      addOrEditHandle (id) {
+        this.addOrEditVisible = true
+        this.$nextTick(() => {
+          this.$refs.addOrEdit.init(id)
+        })
+      },
+      // 删除
+      deleteHandle (id) {
+        var ids = id ? [id] : this.${classname}ListSelections.map(item => {
+          return item.${pk.attrname}
+        })
+        #[[this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {]]#
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          API.${sname}.del(ids).then(({data}) => {
+            if (data && data.code === 0) {
+              this.$message({
+                message: '操作成功',
+                type: 'success',
+                duration: 1500,
+                onClose: () => {
+                  this.get${className}List()
+                }
+              })
+            } else {
+              #[[this.$message.error(data.msg)]]#
+            }
+          })
+        })
+      }
+    }
+  }
+</script>

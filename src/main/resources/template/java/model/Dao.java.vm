@@ -1,0 +1,40 @@
+package ${package}.dao;
+
+import com.github.pagehelper.Page;
+import ${package}.entity.${className};
+import ${package}.dto.${className}Dto;
+import ${package}.param.${className}Param;
+import org.apache.ibatis.annotations.Mapper;
+import io.linlan.commons.db.mybatis.MybatisBaseDao;
+
+/**
+*
+* ${className}数据域:${comments}持久层Dao
+* @Description <br>
+* <br>
+* @author ${author}
+* @author <a href="mailto:${email}">${author}</a><br>
+* CreateTime ${datetime}<br>
+* <br>
+* @version 1.0<br>
+* @since 1.0<br>
+*
+*/
+@Mapper
+public interface ${className}Dao extends MybatisBaseDao<${className}> {
+
+    /** get the page of dto ${className}Dto
+     * 列表分页方法，返回分页DTO对象列表
+     * @param param the input param {@link ${className}Param>}
+     * @return {@link Page<${className}>}
+     */
+    Page<${className}Dto> getPageDto(${className}Param param);
+
+    /** get the dto by input id, return dto
+     * 对象详情方法，通过id查询对象{@link ${className}Dto}
+     * @param ${pk.attrname} #foreach($column in $columns)#if($column.columnName == $pk.columnName)$column.comments#end#end|1
+     * @return {@link ${className}Dto}
+     */
+    ${className}Dto getDtoById(${pk.attrType} ${pk.attrname});
+
+}

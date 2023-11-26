@@ -1,0 +1,83 @@
+package ${viewPackage}.manager;
+
+import com.github.pagehelper.Page;
+import com.google.common.collect.Lists;
+import io.linlan.platform.stage.mbiz.ApiIntfConfig;
+import ${viewPackage}.vo.${className}Vo;
+import ${package}.dto.${className}Dto;
+import ${package}.entity.${className};
+import ${package}.param.${className}Param;
+import ${package}.service.${className}Service;
+import lombok.extern.slf4j.Slf4j;
+import io.linlan.commons.core.StringUtils;
+import io.linlan.commons.db.page.Pagination;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+/**
+ *
+ * ${className}视图域:${comments}查询读取管理类
+ * @Description <br>
+ * <br>
+ * @author ${author}
+ * CreateTime ${datetime}<br>
+ * <br>
+ * @version 1.0<br>
+ * @since 1.0<br>
+ *
+ */
+@Component
+@Slf4j
+public class ${className}EntryManager {
+
+    @Autowired
+    private ${className}Service ${classname}Service;
+
+    /** 通过type和param查询参数，返回数据集差异化的${className}Vo分页对象
+     * @param type 类型:1,page;2,其他类型|1
+     * @param param 查询参数对象
+     * @return {@link Pagination}
+     */
+    public Pagination get${className}Page(String type, ${className}Param param) {
+        if (StringUtils.isBlank(type)){
+            //默认为dto的列表返回
+            type = ApiIntfConfig.VALUE_TYPE_A;
+        }
+        Pagination result = null;
+        if (type.equals(ApiIntfConfig.VALUE_TYPE_A)){
+            Page<${className}Dto> ${classname}DtoList = ${classname}Service.getPageDto(param);
+            if (${classname}DtoList == null){
+                return null;
+            }
+            List<${className}Vo> vos = Lists.transform(${classname}DtoList.getResult(), ${className}Vo.DTO);
+            result = new Pagination(vos, ${classname}DtoList);
+        }
+        return result;
+    }
+
+    /** 通过type和id，返回数据集差异化的${className}Vo对象
+     * @param id #foreach($column in $columns)#if($column.columnName == $pk.columnName)$column.comments#end#end|1
+     * @param type 类型:1,entity;2,dto;3,other|2
+     * @return {@link ${className}Vo}
+     */
+    public ${className}Vo get${className}Vo(String id, String type) {
+        ${className}Vo vo = null;
+        if (StringUtils.isBlank(type)){
+            //默认为Entity实体返回Vo对象
+            type = ApiIntfConfig.VALUE_TYPE_A;
+        }
+        if (StringUtils.isNotBlank(type)){
+            if (type.equals(ApiIntfConfig.VALUE_TYPE_A)){
+                ${className} entity = ${classname}Service.findById(#if(${pk.attrType}=='String')id#else Long.valueOf(id) #end);
+                vo = (${className}Vo) ${className}Vo.TO.apply(entity);
+            } else if (type.equals(ApiIntfConfig.VALUE_TYPE_B)){
+                ${className}Dto dto = ${classname}Service.getDtoById(#if(${pk.attrType}=='String')id#else Long.valueOf(id) #end);
+                vo = (${className}Vo) ${className}Vo.DTO.apply(dto);
+            }
+        }
+        return vo;
+    }
+
+}

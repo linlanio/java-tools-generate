@@ -1,0 +1,21 @@
+package ${package}.dto;
+
+import ${package}.entity.${className};
+import lombok.Data;
+
+/**
+ *
+ * ${className}数据域:${comments}查询结果Dto对象
+ * @Description <br>
+ * <br>
+ * @author ${author}
+ * CreateTime ${datetime}<br>
+ * <br>
+ * @version 1.0<br>
+ * @since 1.0<br>
+ *
+ */
+@Data
+public class ${className}Dto extends ${className} {
+
+}

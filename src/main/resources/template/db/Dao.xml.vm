@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="${package}.dao.${className}Dao">
+
+    <!-- 采用别名使用类成员变量，可根据需求，确定是否启用 -->
+    <resultMap type="${package}.entity.${className}" id="${classname}Map">
+#foreach($column in $columns)
+#if($column.columnName == $pk.columnName)
+        <id property="${column.attrname}" column="${column.columnName}"/>
+#else
+        <result property="${column.attrname}" column="${column.columnName}"/>
+#end
+#end
+    </resultMap>
+
+    <!-- find by id，通过主键获取对象 -->
+    <select id="findById" resultMap="${classname}Map">
+        SELECT
+#foreach($column in $columns)
+${column.columnName}#if($foreach.hasNext), #end
+#end
+
+        FROM ${tableName}
+        WHERE ${pk.columnName} = #{value}
+    </select>
+
+    <!-- get list，通过输入的条件，获取返回的list列表对象，采用相应的分页规则进行分页处理 -->
+    <select id="getList" resultMap="${classname}Map">
+        SELECT
+#foreach($column in $columns)
+B.${column.columnName}#if($foreach.hasNext), #end
+#end
+
+        FROM ${tableName} B
+        WHERE 1=1
+        <include refid="commonList"></include>
+        <include refid="getListOrderBy"></include>
+    </select>
+
+
+    <!-- 通用排序SQL，如果传入参数按照参数排序，如果未传入参数，按照主键排序 -->
+    <sql id="getListOrderBy">
+        <choose>
+            <when test='orderBy != null and orderBy != ""'>
+                <choose>
+                    <when test='orderBy == 0'>
+                        ORDER BY B.CREATE_TIME DESC
+                    </when>
+                    <when test='orderBy == 1'>
+                        ORDER BY B.CREATE_TIME ASC
+                    </when>
+                    <when test='orderBy == 2'>
+                        ORDER BY B.PRIORITY DESC
+                    </when>
+                    <when test='orderBy == 3'>
+                        ORDER BY B.PRIORITY ASC
+                    </when>
+                    <otherwise>
+                        ORDER BY B.${pk.columnName} DESC
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                ORDER BY B.${pk.columnName} DESC
+            </otherwise>
+        </choose>
+    </sql>
+
+    <!-- sql commonList 通过输入的条件，获取返回的list列表对象
+    -->
+    <sql id="commonList">
+        <!--  只允许默认的本表的字段查询，查询条件可通过Param定义，默认全部字段，后续根据Param内的定义，可删除不需要的查询字段 -->
+#foreach($column in $columns)
+        <if test="${column.attrname} != null and ${column.attrname} != ''">
+            and B.${column.columnName} = #{${column.attrname}}
+        </if>
+#end
+
+        <!-- 各个数据库差异化的查询条件处理，如时间字段 -->
+        <choose>
+            <when test='_databaseId == "mysql"'>
+
+            </when>
+            <when test='_databaseId == "dm8"'>
+
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
+
+    </sql>
+
+    <!-- save object，保存对象信息 -->
+    <insert id="save" parameterType="${package}.entity.${className}"#if($pk.extra == 'auto_increment') useGeneratedKeys="true" keyProperty="$pk.attrname"#end>
+        INSERT INTO ${tableName}
+        (
+#foreach($column in $columns)
+#if($column.columnName != $pk.columnName||$pk.extra !='auto_increment')$column.columnName#if($velocityCount != $columns.size()), #end
+#end
+#end
+
+        )
+        VALUES
+        (
+#foreach($column in $columns)#if($column.columnName != $pk.columnName||$pk.extra != 'auto_increment')
+#{$column.attrname}#if($velocityCount != $columns.size()), #end
+#end
+#end
+
+        )
+    </insert>
+
+    <!-- update object，更新对象信息 -->
+    <update id="update" parameterType="${package}.entity.${className}">
+        UPDATE ${tableName}
+        <set>
+#foreach($column in $columns)
+#if($column.columnName != $pk.columnName)
+            <if test="$column.attrname != null">$column.columnName = #{$column.attrname}#if($velocityCount != $columns.size()), #end</if>
+#end
+#end
+        </set>
+        WHERE ${pk.columnName} = #{${pk.attrname}}
+    </update>
+
+    <!-- delete by id，通过主键删除对象 -->
+    <delete id="deleteById">
+        DELETE FROM ${tableName}
+        WHERE ${pk.columnName} = #{value}
+    </delete>
+
+    <!-- delete by ids，通过主键数组批量删除对象 -->
+    <delete id="deleteByIds">
+        DELETE FROM ${tableName}
+        WHERE ${pk.columnName} IN
+        <foreach item="${pk.attrname}" collection="array" open="(" separator="," close=")">
+            #{${pk.attrname}}
+        </foreach>
+    </delete>
+
+    <!-- query total，通过输入的条件，查询返回结果的数量，返回值为int -->
+    <select id="queryTotal" resultType="int">
+        SELECT COUNT(1)
+        FROM ${tableName} B
+        WHERE 1 = 1
+        <include refid="commonList"></include>
+    </select>
+
+    <!-- 以下为新增特定的操作 -->
+    <!-- get list with dto result，通过输入的条件，返回查询结果信息，返回值为dto对象 -->
+    <resultMap type="${package}.dto.${className}Dto" extends="${classname}Map" id="${classname}DtoMap">
+
+    </resultMap>
+
+    <!-- get page with param input dto result，通过输入的条件，返回查询结果信息，返回值为dto对象 -->
+    <select id="getPageDto" resultMap="${classname}DtoMap">
+        SELECT
+#foreach($column in $columns)
+B.${column.columnName}#if($foreach.hasNext), #end
+#end
+
+        FROM ${tableName} B
+        WHERE 1=1
+        <include refid="commonList"></include>
+        <include refid="getListOrderBy"></include>
+
+    </select>
+
+    <!-- get dto with input id，通过ID，查询dto对象 -->
+    <select id="getDtoById" resultMap="${classname}DtoMap">
+        SELECT
+#foreach($column in $columns)
+B.${column.columnName}#if($foreach.hasNext), #end
+#end
+
+        FROM ${tableName} B
+        WHERE ${pk.columnName} = #{value}
+    </select>
+
+
+</mapper>

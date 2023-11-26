@@ -1,0 +1,118 @@
+package ${viewPackage}.manager;
+
+import io.linlan.platform.stage.mbiz.ApiIntfConfig;
+import io.linlan.platform.stage.mbiz.annotation.IValidViewBusiness;
+import ${viewPackage}.vo.${className}Vo;
+import ${package}.entity.${className};
+import ${package}.service.${className}Service;
+import lombok.extern.slf4j.Slf4j;
+import io.linlan.commons.core.ObjectUtils;
+import io.linlan.commons.core.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.io.Serializable;
+
+/**
+ *
+ * ${className}视图域:${comments}增删改操作管理类
+ * @Description <br>
+ * <br>
+ * @author ${author}
+ * CreateTime ${datetime}<br>
+ * <br>
+ * @version 1.0<br>
+ * @since 1.0<br>
+ *
+ */
+@Component
+@Slf4j
+public class ${className}OpManager implements IValidViewBusiness {
+
+    @Autowired
+    private ${className}Service ${classname}Service;
+
+    /** 执行${className}对象Op操作，进行增加、删除、修改业务
+     * @param action 操作类型:10,新增;20,修改;40,删除|20
+     * @param id #foreach($column in $columns)#if($column.columnName == $pk.columnName)$column.comments#end#end:null,1;1,2,3|1
+     * @param input 输入对象信息
+     * @return {@link Boolean}:true,success;false,failure
+     */
+    public boolean do${className}Op(String action, String id, ${className}Vo input) {
+        if (StringUtils.isBlank(action)){
+            return false;
+        }
+        if (StringUtils.isNotBlank(action)){
+            if (action.equals(ApiIntfConfig.VALUE_AT_ADD)){
+                if (ObjectUtils.isEmpty(input)){
+                    return false;
+                }
+                //保存${className}
+                ${className} ${classname} = new ${className}();
+                if(ObjectUtils.isNotEmpty(input.getId())){
+                    ${classname}.setId(input.getId());
+                }
+#foreach ($column in $columns)
+#if($column.columnName != $pk.columnName&&$column.attrname != 'createTime'&&$column.attrname != 'creatorId')
+                ${classname}.set${column.attrName}(input.get${column.attrName}());
+#end
+#end
+                ${classname}Service.save(${classname});
+                return true;
+            } else if (action.equals(ApiIntfConfig.VALUE_AT_UPDATE)){
+                if (ObjectUtils.isEmpty(id) || ObjectUtils.isEmpty(input)){
+                    return false;
+                }
+                if (isValidUpdateSuccess(id)) {
+                    ${className} ${classname} = ${classname}Service.findById(#if(${pk.attrType}=='String')id#else Long.valueOf(id) #end);
+                    if (${classname} != null) {
+                        //部分字段需要单独更新的，此处请删除，如密码、创建时间等，如有关联更新请添加关联方法
+#foreach ($column in $columns)
+#if($column.columnName != $pk.columnName&&$column.attrname != 'createTime'&&$column.attrname != 'creatorId')
+                        ${classname}.set${column.attrName}(input.get${column.attrName}());
+#end
+#end
+                        ${classname}Service.update(${classname});
+                        doUpdateRelation(id);
+                        return true;
+                    }
+                }
+            } else if (action.equals(ApiIntfConfig.VALUE_AT_DELETE)){
+                if (ObjectUtils.isEmpty(id)){
+                    return false;
+                }
+                //删除业务，可传递多个id
+                String[] ids = id.split(StringUtils.COMMA);
+                for (String pkId : ids) {
+                    if (isValidDeleteSuccess(pkId)){
+                        ${classname}Service.deleteById(#if(${pk.attrType} == 'String')pkId#else Long.valueOf(pkId) #end);
+                        doDeleteRelation(pkId);
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isValidUpdateSuccess(Serializable id) {
+        return true;
+    }
+
+    @Override
+    public void doUpdateRelation(Serializable id) {
+
+    }
+
+    @Override
+    public boolean isValidDeleteSuccess(Serializable id) {
+        return true;
+    }
+
+    @Override
+    public void doDeleteRelation(Serializable id) {
+
+    }
+
+}

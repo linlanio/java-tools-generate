@@ -1,0 +1,68 @@
+package ${controllerPackage};
+
+import io.linlan.platform.stage.mbiz.constant.HttpStatusEnum;
+import ${viewPackage}.manager.${className}EntryManager;
+import ${viewPackage}.vo.${className}Vo;
+import ${package}.param.${className}Param;
+import io.linlan.commons.core.ObjectUtils;
+import io.linlan.commons.core.ResponseResult;
+import io.linlan.commons.core.annotation.MemberLog;
+import io.linlan.commons.db.page.Pagination;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+/**
+ *
+ * ${className}控制域:${comments}查询读取控制类
+ * @Description <br>
+ * @author ${author}
+ * CreateTime ${datetime}<br>
+ * @version 1.0<br>
+ * @since 1.0<br>
+ *
+ */
+@RestController
+@RequestMapping("api/app/entry/${classGroup}/")
+public class ${className}EntryController {
+
+    @Autowired
+    private ${className}EntryManager ${classname}EntryManager;
+
+    /** Get ${className} page. 获取${comments}分页, 返回${className}Vo的分页对象.
+     * @param type 类型:1,page;2,其他类型;默认为1|1
+     * @param param 查询参数对象
+     * @return {@link Pagination<${className}Vo>}:null,error;page,success
+     */
+    @MemberLog("获取${comments}分页, 返回${className}Vo的分页对象.")
+    @GetMapping("${sname}/page/{type}")
+    public ResponseResult<Pagination<${className}Vo>> get${className}Page(@PathVariable(value = "type") String type, ${className}Param param) {
+        if (ObjectUtils.isEmpty(param)){
+            return ResponseResult.error(HttpStatusEnum.PARAMETER_ERROR.getCode(), HttpStatusEnum.PARAMETER_ERROR.getMsg());
+        }
+        Pagination result = ${classname}EntryManager.get${className}Page(type, param);
+        if (ObjectUtils.isEmpty(result)){
+            return ResponseResult.error(HttpStatusEnum.RETURN_NONE.getCode(), HttpStatusEnum.RETURN_NONE.getMsg());
+        }
+        return ResponseResult.ok().setResultData(result);
+    }
+
+    /**
+     * Get ${className} Vo by id and type. 通过主键获取${comments}详情, 返回Vo基本对象.
+     * @param id #foreach($column in $columns)#if($column.columnName == $pk.columnName)$column.comments#end#end|1
+     * @param type 类型:1,entity;2,dto;3,other|2
+     * @return {@link ${className}Vo}:null,error;page,success
+     */
+    @MemberLog("通过主键获取${comments}详情, 返回${className}Vo对象.")
+    @GetMapping("${sname}/{id}/{type}")
+    public ResponseResult<${className}Vo> get${className}ById(@PathVariable(value = "id") String id, @PathVariable(value = "type") String type) {
+        if (ObjectUtils.isEmpty(id)){
+            return ResponseResult.error(HttpStatusEnum.PARAMETER_ERROR.getCode(), HttpStatusEnum.PARAMETER_ERROR.getMsg());
+        }
+        ${className}Vo result = ${classname}EntryManager.get${className}Vo(id, type);
+        if (ObjectUtils.isEmpty(result)){
+            return ResponseResult.error(HttpStatusEnum.RETURN_NONE.getCode(), HttpStatusEnum.RETURN_NONE.getMsg());
+        }
+        return ResponseResult.ok().setResultData(result);
+    }
+
+}

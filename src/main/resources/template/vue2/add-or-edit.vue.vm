@@ -1,0 +1,104 @@
+<template>
+  <el-dialog
+    :title="!${classname}.id ? '新增' : '修改'"
+    :close-on-click-modal="false"
+    :visible.sync="visible">
+    <el-form :model="${classname}" :rules="${classname}Rule" ref="dataForm" @keyup.enter.native="${classname}Submit()" label-width="80px">
+#foreach($column in $columns)
+#if($column.columnName != $pk.columnName)
+      <el-form-item label="${column.comments}" prop="${column.attrname}">
+        <el-input v-model="${classname}.${column.attrname}" placeholder="${column.comments}"></el-input>
+      </el-form-item>
+#end
+#end
+    </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="visible = false">取消</el-button>
+      <el-button type="primary" @click="${classname}Submit()">确定</el-button>
+    </span>
+  </el-dialog>
+</template>
+
+<script>
+  import API from '@/api'
+  export default {
+    data () {
+      return {
+        visible: false,
+        ${classname}: {
+#foreach($column in $columns)
+#if($column.columnName == $pk.columnName)
+          ${column.attrname}: 0,
+#else
+          ${column.attrname}: ''#if($velocityCount != $columns.size()),#end
+
+#end
+#end
+        },
+        ${classname}Rule: {
+#foreach($column in $columns)
+#if($column.columnName != $pk.columnName)
+          ${column.attrname}: [
+            { required: true, message: '${column.comments}不能为空', trigger: 'blur' }
+          ]#if($velocityCount != $columns.size()),#end
+
+#end
+#end
+        }
+      }
+    },
+    methods: {
+      init (id) {
+        this.${classname}.${pk.attrname} = id || 0
+        this.visible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].resetFields()
+          if (this.${classname}.${pk.attrname}) {
+            API.${sname}.info(this.${classname}.${pk.attrname}).then(({data}) => {
+              if (data && data.code === 0) {
+#foreach($column in $columns)
+#if($column.columnName != $pk.columnName)
+                this.${classname}.${column.attrname} = data.${classname}.${column.attrname}
+#end
+#end
+              }
+            })
+          }
+        })
+      },
+      // 表单提交
+      ${classname}Submit () {
+        #[[this.$refs['dataForm'].validate((valid) => {]]#
+          if (valid) {
+            var params = {
+#foreach($column in $columns)
+#if($column.columnName == $pk.columnName)
+              '${column.attrname}': this.${classname}.${column.attrname} || undefined,
+#else
+              '${column.attrname}': this.${classname}.${column.attrname}#if($velocityCount != $columns.size()),#end
+
+#end
+#end
+            }
+            var tick = !this.${classname}.${pk.attrname} ? API.${sname}.add(params) : API.${sname}.update(params)
+            tick.then(({data}) => {
+              if (data && data.code === 0) {
+                #[[this.$message({]]#
+                  message: '操作成功',
+                  type: 'success',
+                  duration: 1500,
+                  onClose: () => {
+                    this.visible = false
+                    this.$emit('refresh${className}List')
+                  }
+                })
+              } else {
+                #[[this.$message.error(data.msg)]]#
+              }
+            })
+          }
+        })
+      }
+    }
+  }
+</script>
