@@ -2,27 +2,34 @@
 
 ## Description
 ```
-- JAVA代码工具类，根据模板生成默认代码块，采用Model、View和Controller架构分层设计
-- 代码生成系统，可在线生成后台Model域的entity、xml、dao、service文件，View域的vo和manager文件，Controller域的api文件
-- 可生成前台的vue、ts代码，减少重复的开发工作
-- 代码生成系统支撑mysql数据库、Oracle数据库生成
+- JAVA Utils，generate code by Velocity template，use Model、View and Controller design
+- Springboot Application，generate Model code include: entity、xml、dao、service files，View code include: vo、manager files，Controller code include: api controller files.
+- vue2 code
+- ts and vue3 code
+- support mysql、Oracle database
 
 ```
 
-## 版本历史
+## Version
 
 ```
-2023-07-22  1.0   进行POM内配置调整和精简，增加java-api-doc目录，进行文档验证
-2023-06-18  1.0   创建版本，进行结构划分，打包验证及本地发布
+2.3.1       2023-11-26  完善README.md文件，更新模板，调整文件资源，遗留问题：
+                        1、资源返回对象调整为data，jgGrid显示不正常
+                        2、oracle的脚本Dao文件和Datasource配置未实现
+2.3.0       2023-10-19  路径调整，文件资源更新，遗留问题：
+                        
+2.2.0       2023-07-22  进行POM内配置调整和精简，增加java-api-doc目录，进行文档验证
+2.1.0       2023-06-18  创建版本，进行结构划分，打包验证及本地发布
+
 ```
 
 ## Technical Route
 ### Software Architecture
 ```
-1. 基于Springboot框架
-2. 后台采用AdminLte和Bootstrap组件进行支撑
-3. 页面模板采用Velocity模板
-4. 前台支撑vue3和ts，实现增删改查通用功能
+1. Springboot framework
+2. AdminLte、Bootstrap components
+3. Velocity template
+4. vue3、ts，create，insert，delete，modify，search
 ```
 
 ### Installation
@@ -32,8 +39,32 @@
 ```
 
 ## Use Effect
+![MAIN](./.img/main.png "MAIN")
+
+## Contribute
+1.  Fork repository
+2.  create Feat_1.0.0 branch
+3.  commit code
+```
+git config user.name linlaninfo
+git config user.email linlanio@qq.com
+```
+4. create Pull Request
+5. create and push tag
+```
+create
+git tag -a v2.3.1 -m "完善README.md文件，更新模板，调整文件资源"
+view
+git tag
+push
+git push origin --tags
+delete
+git tag -d v2.3.1
+```
+6. other
 
 ## contact us
-website: https://www.linlan.io
-email: contact@linlan.io
-
+```
+website：https://www.linlan.io
+email：contact@linlan.io
+```
