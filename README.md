@@ -38,7 +38,7 @@
 ```
 
 ## 应用效果
-[主界面](./.img/main.png)
+![主界面](./.img/main.png "主界面")
 
 ## 参与贡献
 1.  Fork 本仓库
@@ -47,23 +47,23 @@
 ```
 git config user.name linlaninfo
 git config user.email linlanio@qq.com
-git config --global --list
-git config --list
 ```
 4. 新建 Pull Request
 5. 创建和提交tag
 ```
 创建
-git tag -a v4 -m "create new tag v4"
+git tag -a v2.3.1 -m "完善README.md文件，更新模板，调整文件资源"
 查看
 git tag
 提交
 git push origin --tags
 删除
-git tag -d v4
+git tag -d v2.3.1
 ```
 6. 其他
 
 ## 联系我们
+```
 网站：https://www.linlan.io
 邮箱：contact@linlan.io
+```
