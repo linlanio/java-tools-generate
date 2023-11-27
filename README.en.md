@@ -13,6 +13,7 @@
 ## Version
 
 ```
+2.3.1       2023-11-27  修改英文说明文件，增加distributionManagement属性，发布到github
 2.3.1       2023-11-26  完善README.md文件，更新模板，调整文件资源，遗留问题：
                         1、资源返回对象调整为data，jgGrid显示不正常
                         2、oracle的脚本Dao文件和Datasource配置未实现
