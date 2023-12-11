@@ -10,11 +10,9 @@ import java.util.Date;
 /**
  *
  * ${className}视图域:${comments}显示Vo类
- * @Description <br>
  * <br>
  * @author ${author}
  * CreateTime ${datetime}<br>
- * <br>
  * @version 1.0<br>
  * @since 1.0<br>
  *

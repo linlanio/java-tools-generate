@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 /**
  *
  * ${className}控制域:${comments}增删改操作控制类
- * @Description <br>
  * <br>
  * @author ${author}
  * CreateTime ${datetime}<br>
@@ -22,19 +21,19 @@ import org.springframework.web.bind.annotation.*;
  *
  */
 @RestController
-@RequestMapping("api/app/op/${classGroup}")
+@RequestMapping("api/plat/op/${classGroup}")
 public class ${className}OpController {
 
     @Autowired
     private ${className}OpManager ${classname}OpManager;
 
-    /** ${className} Operation. 检查对象${className}数据逻辑，根据操作类型，执行新增、修改、删除操作.
-     * @param action 操作类型:10,新增;20,修改;40,删除|20
+    /** ${className} Operation. ${className}数据操作逻辑，根据操作类型，执行新增、修改、删除、初始化、导出、导入等各类操作.
+     * @param action 操作类型:10,新增;20,修改;40,删除|10
      * @param id #foreach($column in $columns)#if($column.columnName == $pk.columnName)$column.comments#end#end:null;1;1,2,3|1
-     * @param input 输入对象信息
-     * @return {@link String}:操作成功;操作失败
+     * @param input 对象信息，输入Vo对象
+     * @return {@link String}:操作成功0;操作失败1
      */
-    @MemberLog("检查对象${className}数据逻辑，根据操作类型，执行新增、修改、删除操作")
+    @MemberLog("检查对象${className}数据操作逻辑，根据操作类型，执行新增、修改、删除、初始化、导出、导入等操作")
     @PostMapping("${sname}/{action}/{id}")
     public ResponseResult<String> ${classname}Op(@PathVariable(value = "action") String action,
                                                @PathVariable(value = "id") String id,

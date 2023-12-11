@@ -5,12 +5,10 @@ import lombok.Data;
 
 /**
  *
- * ${className}数据域:${comments}查询结果Dto对象
- * @Description <br>
+ * ${className}数据域:${comments}Dto对象
  * <br>
  * @author ${author}
  * CreateTime ${datetime}<br>
- * <br>
  * @version 1.0<br>
  * @since 1.0<br>
  *

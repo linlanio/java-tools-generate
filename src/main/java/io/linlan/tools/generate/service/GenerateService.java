@@ -41,7 +41,7 @@ public class GenerateService {
 		// 根据查询条件查询列表数据
 		List<Map<String, Object>> list = generateDao.getList(query);
 		//根据查询条件计算总记录数
-		int total = generateDao.queryTotal(params);
+		int total = generateDao.getCount(params);
 		//将查询结果信息和分页信息通过分页对象的构造方法进行填充对应的值
 		Pagination pagination = new Pagination(list, total, query.getLimit(), query.getPage());
 		return pagination;
@@ -53,8 +53,8 @@ public class GenerateService {
 	 * @param map the input select conditions
 	 * @return total count
 	 */
-	public int queryTotal(Map<String, Object> map) {
-		return generateDao.queryTotal(map);
+	public int getCount(Map<String, Object> map) {
+		return generateDao.getCount(map);
 	}
 
 	/**

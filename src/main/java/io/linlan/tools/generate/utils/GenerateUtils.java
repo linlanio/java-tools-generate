@@ -226,9 +226,6 @@ public class GenerateUtils {
 		if ("true".equals(config.getString("is_dao"))) {
 			templates.add(tplPathDb + "Dao.xml.vm");
 		}
-//		if ("true".equals(config.getString("is_sql"))) {
-//			templates.add(tplPathDb + "menu.sql.vm");
-//		}
 
 		// 处理admin-lte模式的后台页面文件，后续不在使用
 //		String tplPathLte = config.getString("tpl_path_lte");
@@ -244,7 +241,6 @@ public class GenerateUtils {
 //			templates.add(tplPathNode + "index.js.vm");
 //			templates.add(tplPathNode + "index.vue.vm");
 //		}
-
 
 		for (String template : templates) {
 			// 渲染模板

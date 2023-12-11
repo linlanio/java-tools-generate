@@ -19,11 +19,9 @@ import java.util.List;
 /**
  *
  * ${className}视图域:${comments}查询读取管理类
- * @Description <br>
  * <br>
  * @author ${author}
  * CreateTime ${datetime}<br>
- * <br>
  * @version 1.0<br>
  * @since 1.0<br>
  *
@@ -47,7 +45,7 @@ public class ${className}EntryManager {
         }
         Pagination result = null;
         if (type.equals(ApiIntfConfig.VALUE_TYPE_A)){
-            Page<${className}Dto> ${classname}DtoList = ${classname}Service.getPageDto(param);
+            Page<${className}Dto> ${classname}DtoList = ${classname}Service.getPage(param);
             if (${classname}DtoList == null){
                 return null;
             }
@@ -73,7 +71,7 @@ public class ${className}EntryManager {
                 ${className} entity = ${classname}Service.findById(#if(${pk.attrType}=='String')id#else Long.valueOf(id) #end);
                 vo = (${className}Vo) ${className}Vo.TO.apply(entity);
             } else if (type.equals(ApiIntfConfig.VALUE_TYPE_B)){
-                ${className}Dto dto = ${classname}Service.getDtoById(#if(${pk.attrType}=='String')id#else Long.valueOf(id) #end);
+                ${className}Dto dto = ${classname}Service.getById(#if(${pk.attrType}=='String')id#else Long.valueOf(id) #end);
                 vo = (${className}Vo) ${className}Vo.DTO.apply(dto);
             }
         }

@@ -16,11 +16,9 @@ import java.io.Serializable;
 /**
  *
  * ${className}视图域:${comments}增删改操作管理类
- * @Description <br>
  * <br>
  * @author ${author}
  * CreateTime ${datetime}<br>
- * <br>
  * @version 1.0<br>
  * @since 1.0<br>
  *

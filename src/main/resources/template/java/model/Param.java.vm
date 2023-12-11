@@ -10,11 +10,9 @@ import lombok.Data;
 /**
  *
  * ${className}数据域:${comments}查询参数实体类
- * @Description <br>
  * <br>
  * @author ${author}
  * CreateTime ${datetime}<br>
- * <br>
  * @version 1.0<br>
  * @since 1.0<br>
  *

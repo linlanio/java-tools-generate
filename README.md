@@ -12,6 +12,11 @@
 ## 版本历史
 
 ```
+2.3.2       2023-12-11  queryTotal调整为getCount，getPage的返回对象调整为Page，增加getById方法返回DTO对象，入参为Object
+                        batchInsert调整为save，删除is_sql变量，删除menu_sql.vm模板
+                        调整模板文件的位置，默认getPage，getById移动到相应位置
+                        将api/app修改为api/plat
+                        调整注释说明，修改模板文件内格式和顺序
 2.3.1       2023-11-27  修改英文说明文件，增加distributionManagement属性，发布到github
 2.3.1       2023-11-26  完善README.md文件，更新模板，调整文件资源，遗留问题：
                         1、资源返回对象调整为data，jgGrid显示不正常

@@ -57,7 +57,7 @@
 
     </select>
 
-    <select id="queryTotal" resultType="int">
+    <select id="getPage" resultType="int">
         <choose>
             <when test='_databaseId == "oracle"'>
                 select count(*) from user_tables

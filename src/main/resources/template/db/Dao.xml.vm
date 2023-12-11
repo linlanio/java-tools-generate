@@ -38,6 +38,35 @@ B.${column.columnName}#if($foreach.hasNext), #end
         <include refid="getListOrderBy"></include>
     </select>
 
+    <!-- get list with dto result，通过输入的条件，返回查询结果信息，返回值为dto对象 -->
+    <resultMap type="${package}.dto.${className}Dto" extends="${classname}Map" id="${classname}DtoMap">
+
+    </resultMap>
+
+    <!-- get page with param input dto result，通过输入的条件，返回查询结果信息，返回值为dto对象 -->
+    <select id="getPage" resultMap="${classname}DtoMap">
+        SELECT
+#foreach($column in $columns)
+B.${column.columnName}#if($foreach.hasNext), #end
+#end
+
+        FROM ${tableName} B
+        WHERE 1=1
+        <include refid="commonList"></include>
+        <include refid="getListOrderBy"></include>
+
+    </select>
+
+    <!-- get dto with input id，通过ID，查询dto对象 -->
+    <select id="getById" resultMap="${classname}DtoMap">
+        SELECT
+#foreach($column in $columns)
+B.${column.columnName}#if($foreach.hasNext), #end
+#end
+
+        FROM ${tableName} B
+        WHERE ${pk.columnName} = #{value}
+    </select>
 
     <!-- 通用排序SQL，如果传入参数按照参数排序，如果未传入参数，按照主键排序 -->
     <sql id="getListOrderBy">
@@ -67,8 +96,7 @@ B.${column.columnName}#if($foreach.hasNext), #end
         </choose>
     </sql>
 
-    <!-- sql commonList 通过输入的条件，获取返回的list列表对象
-    -->
+    <!-- sql commonList 通过输入的条件，获取返回的list列表对象 -->
     <sql id="commonList">
         <!--  只允许默认的本表的字段查询，查询条件可通过Param定义，默认全部字段，后续根据Param内的定义，可删除不需要的查询字段 -->
 #foreach($column in $columns)
@@ -141,7 +169,7 @@ B.${column.columnName}#if($foreach.hasNext), #end
     </delete>
 
     <!-- query total，通过输入的条件，查询返回结果的数量，返回值为int -->
-    <select id="queryTotal" resultType="int">
+    <select id="getCount" resultType="int">
         SELECT COUNT(1)
         FROM ${tableName} B
         WHERE 1 = 1
@@ -149,35 +177,6 @@ B.${column.columnName}#if($foreach.hasNext), #end
     </select>
 
     <!-- 以下为新增特定的操作 -->
-    <!-- get list with dto result，通过输入的条件，返回查询结果信息，返回值为dto对象 -->
-    <resultMap type="${package}.dto.${className}Dto" extends="${classname}Map" id="${classname}DtoMap">
-
-    </resultMap>
-
-    <!-- get page with param input dto result，通过输入的条件，返回查询结果信息，返回值为dto对象 -->
-    <select id="getPageDto" resultMap="${classname}DtoMap">
-        SELECT
-#foreach($column in $columns)
-B.${column.columnName}#if($foreach.hasNext), #end
-#end
-
-        FROM ${tableName} B
-        WHERE 1=1
-        <include refid="commonList"></include>
-        <include refid="getListOrderBy"></include>
-
-    </select>
-
-    <!-- get dto with input id，通过ID，查询dto对象 -->
-    <select id="getDtoById" resultMap="${classname}DtoMap">
-        SELECT
-#foreach($column in $columns)
-B.${column.columnName}#if($foreach.hasNext), #end
-#end
-
-        FROM ${tableName} B
-        WHERE ${pk.columnName} = #{value}
-    </select>
 
 
 </mapper>

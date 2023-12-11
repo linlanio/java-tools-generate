@@ -28,7 +28,7 @@ public interface GenerateDao {
      * @param map 查询条件map
      * @return 记录总数
      */
-    int queryTotal(Map<String, Object> map);
+    int getCount(Map<String, Object> map);
 
     /** 查询单个表的基本信息，包含名称、存储引擎、表备注、创建时间等
      * @param tableName 英文表名称

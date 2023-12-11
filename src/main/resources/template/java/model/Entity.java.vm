@@ -11,11 +11,9 @@ import io.linlan.commons.core.RandomUtils;
 /**
  *
  * ${className}数据域:${comments}实体类
- * @Description <br>
  * <br>
  * @author ${author}
  * CreateTime ${datetime}<br>
- * <br>
  * @version 1.0<br>
  * @since 1.0<br>
  *

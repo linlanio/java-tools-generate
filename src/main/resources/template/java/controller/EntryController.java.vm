@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 /**
  *
  * ${className}控制域:${comments}查询读取控制类
- * @Description <br>
  * @author ${author}
  * CreateTime ${datetime}<br>
  * @version 1.0<br>
@@ -22,15 +21,15 @@ import org.springframework.web.bind.annotation.*;
  *
  */
 @RestController
-@RequestMapping("api/app/entry/${classGroup}/")
+@RequestMapping("api/plat/entry/${classGroup}/")
 public class ${className}EntryController {
 
     @Autowired
     private ${className}EntryManager ${classname}EntryManager;
 
-    /** Get ${className} page. 获取${comments}分页, 返回${className}Vo的分页对象.
-     * @param type 类型:1,page;2,其他类型;默认为1|1
-     * @param param 查询参数对象
+    /** Get ${className} page. 获取${comments}分页, 返回${className}Vo对象.
+     * @param type 类型:1,分页page;2,其他特定类型;默认为1|1
+     * @param param 参数查询对象
      * @return {@link Pagination<${className}Vo>}:null,error;page,success
      */
     @MemberLog("获取${comments}分页, 返回${className}Vo的分页对象.")
@@ -47,12 +46,12 @@ public class ${className}EntryController {
     }
 
     /**
-     * Get ${className} Vo by id and type. 通过主键获取${comments}详情, 返回Vo基本对象.
+     * Get ${className} Vo by id and type. 主键获取${comments}详情, 返回Vo对象.
      * @param id #foreach($column in $columns)#if($column.columnName == $pk.columnName)$column.comments#end#end|1
-     * @param type 类型:1,entity;2,dto;3,other|2
-     * @return {@link ${className}Vo}:null,error;page,success
+     * @param type 类型:1,库entity;2,事务dto;3,其他other|2
+     * @return {@link ${className}Vo}:空null,error;分页page,success
      */
-    @MemberLog("通过主键获取${comments}详情, 返回${className}Vo对象.")
+    @MemberLog("主键获取${comments}详情, 返回${className}Vo对象.")
     @GetMapping("${sname}/{id}/{type}")
     public ResponseResult<${className}Vo> get${className}ById(@PathVariable(value = "id") String id, @PathVariable(value = "type") String type) {
         if (ObjectUtils.isEmpty(id)){

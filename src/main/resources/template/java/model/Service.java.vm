@@ -16,11 +16,9 @@ import java.util.Map;
 /**
  *
  * ${className}数据域:${comments}服务类
- * @Description <br>
  * <br>
  * @author ${author}
  * CreateTime ${datetime}<br>
- * <br>
  * @version 1.0<br>
  * @since 1.0<br>
  *
@@ -42,6 +40,17 @@ public class ${className}Service {
         return dao.getList(map);
     }
 
+    /** get the page of dto ${className}Dto
+     * 列表分页方法，返回分页DTO对象列表
+     * @param param the input param {@link ${className}Param>}
+     * @return {@link Page<${className}>}
+     */
+    //@DataFilter(tableAlias = "B", owner = false)
+    public Page<${className}Dto> getPage(${className}Param param) {
+        PageHelper.startPage(param.getPage(), param.getLimit());
+        return dao.getPage(param);
+    }
+
     /** find the entity by input id, return entity
      * 对象详情方法，通过id查询对象{@link ${className}}
      * @param ${pk.attrname} #foreach($column in $columns)#if($column.columnName == $pk.columnName)$column.comments#end#end|1
@@ -49,6 +58,15 @@ public class ${className}Service {
      */
     public ${className} findById(${pk.attrType} ${pk.attrname}) {
         return dao.findById(${pk.attrname});
+    }
+
+    /** get the dto by input id, return dto
+     * 对象详情方法，通过id查询对象{@link ${className}Dto}
+     * @param ${pk.attrname} #foreach($column in $columns)#if($column.columnName == $pk.columnName)$column.comments#end#end|1
+     * @return {@link ${className}Dto}
+     */
+    public ${className}Dto getById(${pk.attrType} ${pk.attrname}) {
+        return dao.getById(${pk.attrname});
     }
 
     /** save the entity with input object
@@ -65,8 +83,8 @@ public class ${className}Service {
      * 保存对象${comments}，批量保存list
      * @param list {@link ${className}}
      */
-    public void batchInsert(List<${className}> list) {
-        dao.batchInsert(list);
+    public void save(List<${className}> list) {
+        dao.save(list);
     }
 
     /** update the entity with input object
@@ -100,29 +118,8 @@ public class ${className}Service {
      * @param map the input select conditions
      * @return total count
      */
-    public int queryTotal(Map<String, Object> map) {
-        return dao.queryTotal(map);
+    public int getCount(Map<String, Object> map) {
+        return dao.getCount(map);
     }
-
-    /** get the page of dto ${className}Dto
-     * 列表分页方法，返回分页DTO对象列表
-     * @param param the input param {@link ${className}Param>}
-     * @return {@link Page<${className}>}
-     */
-    //@DataFilter(tableAlias = "B", owner = false)
-    public Page<${className}Dto> getPageDto(${className}Param param) {
-        PageHelper.startPage(param.getPage(), param.getLimit());
-        return dao.getPageDto(param);
-    }
-
-    /** get the dto by input id, return dto
-     * 对象详情方法，通过id查询对象{@link ${className}Dto}
-     * @param ${pk.attrname} #foreach($column in $columns)#if($column.columnName == $pk.columnName)$column.comments#end#end|1
-     * @return {@link ${className}Dto}
-     */
-    public ${className}Dto getDtoById(${pk.attrType} ${pk.attrname}) {
-        return dao.getDtoById(${pk.attrname});
-    }
-
 
 }
